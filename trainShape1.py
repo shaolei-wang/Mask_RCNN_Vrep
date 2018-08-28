@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -76,12 +77,10 @@ config = ShapesConfig()
 config.display()
 
 class DrugDataset(utils.Dataset):
-    # 得到该图中有多少个实例（物体）
     def get_obj_index(self, image):
         n = np.max(image)
         return n
 
-    # 解析labelme中得到的yaml文件，从而得到mask每一层对应的实例标签
     def from_yaml_get_class(self, image_id):
         info = self.image_info[image_id]
         with open(info['yaml_path']) as f:
@@ -90,7 +89,7 @@ class DrugDataset(utils.Dataset):
             del labels[0]
         return labels
 
-    # 重新写draw_mask
+    # rewrite draw_mask
     def draw_mask(self, num_obj, mask, image,image_id):
         #print("draw_mask-->",image_id)
         #print("self.image_info",self.image_info)
@@ -107,8 +106,8 @@ class DrugDataset(utils.Dataset):
                         mask[j, i, index] = 1
         return mask
 
-    # 重新写load_shapes，里面包含自己的自己的类别
-    # 并在self.image_info信息中添加了path、mask_path 、yaml_path
+    # rewrite load_shapes，contain own objects class
+    # self.image_info add path、mask_path 、yaml_path
     # yaml_pathdataset_root_path = "/tongue_dateset/"
     # img_floder = dataset_root_path + "rgb"
     # mask_floder = dataset_root_path + "mask"
@@ -124,7 +123,7 @@ class DrugDataset(utils.Dataset):
         self.add_class("shapes", 2, "Wall")
         self.add_class("shapes", 3, "Shelf")
         for i in range(count):
-            # 获取图片宽和高
+            # get height and width of image
             filestr = imglist[i].split(".")[0]
             #print(imglist[i],"-->",cv_img.shape[1],"--->",cv_img.shape[0])
             #print("id-->", i, " imglist[", i, "]-->", imglist[i],"filestr-->",filestr)
@@ -137,7 +136,7 @@ class DrugDataset(utils.Dataset):
             self.add_image("shapes", image_id=i, path=img_floder + "/" + imglist[i],
                            width=cv_img.shape[1], height=cv_img.shape[0], mask_path=mask_path, yaml_path=yaml_path)
 
-    # 重写load_mask
+    # rewrite load_mask
     def load_mask(self, image_id):
         """Generate instance masks for shapes of the given image ID.
         """
@@ -181,7 +180,7 @@ def get_ax(rows=1, cols=1, size=8):
     _, ax = plt.subplots(rows, cols, figsize=(size * cols, size * rows))
     return ax
 
-#基础设置
+#basic config
 dataset_root_path="/home/enwhsaa/ros/train_model/mask_rcnn/trainData/"
 img_floder = dataset_root_path + "rgb"
 mask_floder = dataset_root_path + "mask"
@@ -189,7 +188,7 @@ mask_floder = dataset_root_path + "mask"
 imglist = os.listdir(img_floder)
 count = len(imglist)
 
-#train与val数据集准备
+#prepare train and val dataset
 dataset_train = DrugDataset()
 dataset_train.load_shapes(count, img_floder, mask_floder, imglist,dataset_root_path)
 dataset_train.prepare()
