@@ -7,6 +7,8 @@ You can start testing the model I showed in lasting meeting.
 1. change the path in the file `./testShapes1.py`
 2. run `python testShapes1.py`
 
+Please note that because github has a limitation of 100MB for upload file. I put trained model for test `mask_rcnn_vrepdoor_0030` in teams->KTH Thesis->TrainSet. Please download it and put it to `./logs/`
+
 ### Train new model
 When you want to train new dataset, the first step is to get images from rosbag.
 
